@@ -1,0 +1,11 @@
+version: '3'
+services:
+  webserver: 
+    image: openproject/community:11
+    ports:
+      - "8080:80"
+    environment:
+      - SECRET_KEY_BASE=secret
+    volumes:
+      - ./pgdata:/var/openproject/pgdata
+      - ./assets:/var/openproject/assets 
