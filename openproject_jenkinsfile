@@ -1,0 +1,25 @@
+pipeline{
+    agent any
+    stages{
+        stage("Clone Git Code"){
+            steps{
+                git credentialsId: 'github_cred', url: 'https://github.com/vilas-chavan/openproject1.git'
+            }
+        }
+        
+        stage("Copy Code"){
+            steps{
+                sshPublisher(publishers: [sshPublisherDesc(configName: 'Jenkins', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: 'rsync -ivh /var/lib/jenkins/workspace/openproject1/*  root@10.0.1.133:/root/openprojecttemp/', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '', remoteDirectorySDF: false, removePrefix: '', sourceFiles: '')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
+            }
+        }
+        
+        stage("Deploy The Application"){
+            steps{
+                sshPublisher(publishers: [sshPublisherDesc(configName: 'webserver', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: '''cd /root/openproject
+                 cp -rf /root/openprojecttemp/*  /root/openproject/
+                 docker-compose up -d''', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '', remoteDirectorySDF: false, removePrefix: '', sourceFiles: '')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
+            }
+        }
+        
+    }
+}
