@@ -16,6 +16,7 @@ pipeline{
         stage("Deploy The Application"){
             steps{
                 sshPublisher(publishers: [sshPublisherDesc(configName: 'webserver', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: '''cd /root/openproject
+                 docker-compose down
                  cp -rf /root/openprojecttemp/*  /root/openproject/
                  docker-compose up -d''', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '', remoteDirectorySDF: false, removePrefix: '', sourceFiles: '')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
             }
